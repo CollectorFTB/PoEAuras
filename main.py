@@ -4,9 +4,10 @@ from mana import PrecentMana
 
 MAX_MANA = 950
 RMR = 86
+# class member, TODO: bypass this hack
+PrecentMana.MAX_MANA = MAX_MANA
 
 def main():
-    PrecentMana.MAX_MANA = MAX_MANA
     # all armour links
     staff = Link(actives=[Aura("Anger"), Aura("Wrath"), Aura("Hatred")], supports=[Empower(4), Enlighten(6)], local_mods={})
     body = Link(actives=[Aura("Malevolence"), Aura("Zealotry"), Aura("Clarity", level=23), Aura("Precision", level=23), Aura("Vitality")], supports=[], local_mods={})
@@ -21,10 +22,9 @@ def main():
     setup = AuraSetup(links, rmr=RMR, global_mods={'Spell': 2}, max_mana=MAX_MANA)
     unreserved_mana = setup.print_setup()
     print(f'Mana: {unreserved_mana}/{setup.max_mana}')
-
     
 
-
+    
 if __name__ == "__main__":
     main()
 

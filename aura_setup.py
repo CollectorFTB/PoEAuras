@@ -10,10 +10,14 @@ class Aura:
         self.level = level
         self.quality = quality
         self.tags = ['Spell', 'AoE', 'Aura', 'Active']
+        self.supports = []
     
-    @property
-    def cost(self):
-        return get_mana_cost(self.name, self.level)
+    def support_by(self, support):
+        self.supports.append(support)
+
+    def cost(self, rmr):
+        multiplier =  reduce(operator.mul, [support.multiplier for support in self.supports], 1)
+        return get_mana_cost(self.name, self.level).calculate(multiplier, rmr)
 
 class Link:
     def __init__(self, actives, supports, local_mods):
@@ -21,10 +25,11 @@ class Link:
         self.supports = supports
         self.local_mods = local_mods
 
-    @property
-    def multiplier(self):
-        return reduce(operator.mul, [support.multiplier for support in self.supports], 1)
-
+        for active in self.actives:
+            for support in self.supports:
+                if any(tag in support.tags for tag in active.tags):
+                    active.support_by(support)
+        
     @property
     def local_rmr(self):
         return self.local_mods['Rmr'] if 'Rmr' in self.local_mods.keys() else 0
@@ -42,8 +47,8 @@ class AuraSetup:
         for link in self.links:
             total_rmr = max(0, round(1-(self.rmr + link.local_rmr)/100, 3))
             for active in link.actives:
-                print(active.name, active.cost.calculate(link.multiplier, total_rmr))
-                mana -= active.cost.calculate(link.multiplier, total_rmr)
+                print(f'{active.name}: {active.cost(total_rmr)}')
+                mana -= active.cost(total_rmr)
 
         return mana.floor()
 
