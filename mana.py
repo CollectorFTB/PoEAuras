@@ -1,7 +1,5 @@
 import math
 
-MAX_MANA = 1086
-
 def calculate_round_mana(mana, multiplier, rmr):
     return math.ceil(round(mana * multiplier * rmr, 3))
 
@@ -11,12 +9,13 @@ class Mana:
 
 
 class PrecentMana(Mana):
+    MAX_MANA = None
     def __init__(self, mana):
         self.mana = mana
     
     @property
     def cost(self):
-        return MAX_MANA * self.mana/100.0
+        return self.MAX_MANA * self.mana/100.0
 
     def __repr__(self):
         return str(self.mana) + '%'

@@ -1,42 +1,28 @@
-from aura_setup import SETUP1 as LINKS
-from aura_data import RMR
-from mana import FlatMana, PrecentMana, MAX_MANA
-from util import get_mana_cost
-import math
+from aura_setup import AuraSetup, Aura, Link
+from gem import Empower, Enlighten
+from mana import PrecentMana
 
-def calculate_local_multiplier(local_link_modifiers):    
-    multiplier = 1
-    local_rmr = 0
-    modifiers = []
-
-    if 'Empower' in local_link_modifiers:
-        multiplier *= 1.25
-
-    if 'Enlighten' in local_link_modifiers:
-        multiplier *= 1-0.04*(local_link_modifiers['Enlighten']-1)    
-
-    if 'Rmr' in local_link_modifiers:
-        local_rmr = local_link_modifiers['Rmr']
-
-    return multiplier, local_rmr
-
-def calculate_aura_mana_cost(rmr):
-    total_mana = FlatMana(MAX_MANA)
-    for link, aura_dict in LINKS.items():
-        multiplier, local_rmr = calculate_local_multiplier(aura_dict['Local'])
-        for aura in aura_dict['Auras']:
-            total_rmr = max(0, round(1-((rmr + local_rmr)/100.0), 3))
-            aura_cost = get_mana_cost(aura.name, aura.level).calculate(multiplier, total_rmr)
-            total_mana -= aura_cost
-            print(f'{aura.name}: {aura_cost}')
-
-    total_mana.floor()
-    return total_mana
-
+MAX_MANA = 950
+RMR = 86
 
 def main():
-    mana_cost = calculate_aura_mana_cost(RMR)
-    print(f'Mana: {mana_cost.mana}/{MAX_MANA}')
+    PrecentMana.MAX_MANA = MAX_MANA
+    # all armour links
+    staff = Link(actives=[Aura("Anger"), Aura("Wrath"), Aura("Hatred")], supports=[Empower(4), Enlighten(6)], local_mods={})
+    body = Link(actives=[Aura("Malevolence"), Aura("Zealotry"), Aura("Clarity", level=23), Aura("Precision", level=23), Aura("Vitality")], supports=[], local_mods={})
+    gloves1 = Link(actives=[Aura("Haste"), Aura("Discipline")], supports=[Empower(4)], local_mods={})
+    gloves2 = Link(actives=[Aura("Grace")], supports=[Empower(4)], local_mods={'Rmr': 15})
+    boots = Link(actives=[Aura('Determination'), Aura('Dread Banner')], supports=[], local_mods={})
+    helmet = Link(actives=[Aura("Purity of Ice"), Aura("Purity of Fire"), Aura("Purity of Lightning"), Aura('Purity of Elements')], supports=[], local_mods={})
+    other = Link(actives=[Aura("Aspect of the avian")], supports=[], local_mods={})
+
+    links = [staff, body, gloves1, gloves2, boots, helmet, other]
+
+    setup = AuraSetup(links, rmr=RMR, global_mods={'Spell': 2}, max_mana=MAX_MANA)
+    unreserved_mana = setup.print_setup()
+    print(f'Mana: {unreserved_mana}/{setup.max_mana}')
+
+    
 
 
 if __name__ == "__main__":

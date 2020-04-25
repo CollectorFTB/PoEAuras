@@ -1,4 +1,3 @@
-RMR = 84
 
 PRECENT_COSTS = {
     'Anger': 50,
