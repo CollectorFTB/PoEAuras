@@ -13,6 +13,7 @@ class Aura:
         self.supports = []
     
     def support_by(self, support):
+        support.apply_to(self)
         self.supports.append(support)
 
     def cost(self, rmr):
@@ -20,26 +21,50 @@ class Aura:
         return get_mana_cost(self.name, self.level).calculate(multiplier, rmr)
 
 class Link:
-    def __init__(self, actives, supports, local_mods):
+    def __init__(self, actives, supports, mana_mods, level_mods):
         self.actives = actives
         self.supports = supports
-        self.local_mods = local_mods
+        self.mana_mods = mana_mods
+        self.level_mods = level_mods
+
+        self.apply_level_mods(self.level_mods)
 
         for active in self.actives:
             for support in self.supports:
-                if any(tag in support.tags for tag in active.tags):
+                if any(tag in support.support_list for tag in active.tags):
                     active.support_by(support)
         
+
     @property
     def local_rmr(self):
-        return self.local_mods['Rmr'] if 'Rmr' in self.local_mods.keys() else 0
+        return self.mana_mods['Rmr'] if 'Rmr' in self.mana_mods.keys() else 0
+
+    def apply_level_mods(self, level_mods):
+        for tag, bonus in level_mods.items():
+            for active in self.actives:
+                if tag in active.tags:
+                    active.level += bonus
+
+            for support in self.supports:
+                if tag in support.tags:
+                    support.level += bonus
+
+    def print_link(self):
+        for active in self.actives:
+            print(f'{active.name}({active.level}/{active.quality})')
+        for support in self.supports:
+            print(f'{support.name}({support.level}/{support.quality})')
+
 
 class AuraSetup:
-    def __init__(self, links, rmr, max_mana, global_mods):
+    def __init__(self, links, rmr, max_mana, level_mods):
         self.rmr = rmr
         self.links = links
         self.max_mana = max_mana
-        self.global_mods = global_mods
+        self.level_mods = level_mods
+
+        for link in self.links:
+            link.apply_level_mods(self.level_mods)
     
     def print_setup(self):
         mana = FlatMana(self.max_mana)
