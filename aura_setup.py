@@ -1,5 +1,5 @@
 from util import get_mana_cost
-from mana import FlatMana
+from mana import FlatMana, Mana
 
 from functools import reduce
 import operator
@@ -65,6 +65,8 @@ class AuraSetup:
 
         for link in self.links:
             link.apply_level_mods(self.level_mods)
+
+        Mana.MAX_MANA = self.max_mana
     
     def print_setup(self):
         mana = FlatMana(self.max_mana)

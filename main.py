@@ -4,8 +4,6 @@ from mana import PrecentMana
 
 MAX_MANA = 950
 RMR = 86
-# class member, TODO: bypass this hack
-PrecentMana.MAX_MANA = MAX_MANA
 
 def main():
     # all armour links

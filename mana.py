@@ -4,12 +4,12 @@ def calculate_round_mana(mana, multiplier, rmr):
     return math.ceil(round(mana * multiplier * rmr, 3))
 
 class Mana:
+    MAX_MANA = None
     def calculate(self, multiplier, rmr):
         return self.__class__(calculate_round_mana(self.mana, multiplier, rmr))
 
 
 class PrecentMana(Mana):
-    MAX_MANA = None
     def __init__(self, mana):
         self.mana = mana
     
