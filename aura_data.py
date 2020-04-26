@@ -22,8 +22,13 @@ PRECENT_COSTS = {
     'Aspect of the cat': 25,
     'Aspect of the crab': 25,
     'Dread Banner': 10,
-    'War Banner': 10
-}
+    'War Banner': 10,
+    'Herald of Purity': 25,
+    'Herald of Agony': 25,
+    'Herald of Ice': 25,
+    'Herald of Ash': 25,
+    'Herald of Lightning': 25
+    }
 
 FLAT_COSTS = {
     'Clarity': [34, 48, 61, 76, 89, 102, 115, 129, 141, 154, 166, 178, 190, 203, 214, 227, 239, 251, 265, 279, 293, 303, 313, 323, 333, 343, 353, 363, 373, 383, 406, 418, 430, 442, 455, 467, 479, 491, 503, 515],
